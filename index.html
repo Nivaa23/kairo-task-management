@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kairo — A calm, focused productivity tool for daily task management and project tracking.">
+  <title>Kairo — Your moment to act</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱</text></svg>">
+</head>
+<body>
+
+  <!-- ============ SPLASH SCREEN ============ -->
+  <div class="splash-screen" id="splashScreen">
+    <div class="splash-logo">Kairo</div>
+    <p class="splash-tagline">Your moment to act</p>
+    <div class="splash-input-wrap">
+      <input type="text" id="splashInput" placeholder="What needs to be done today?" autocomplete="off" autofocus>
+    </div>
+    <p class="splash-hint">Press <kbd>Enter</kbd> to begin</p>
+  </div>
+
+  <!-- ============ ONBOARDING ============ -->
+  <div class="onboarding-screen hidden" id="onboardingScreen">
+    <!-- Step 1 -->
+    <div class="onboarding-card" id="onboardStep1">
+      <div class="onboarding-step-indicator">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+      </div>
+      <h2 class="onboarding-title">Welcome to Kairo</h2>
+      <p class="onboarding-subtitle">What should we call you?</p>
+      <input type="text" class="onboarding-input" id="onboardNameInput" placeholder="Your name" autocomplete="off">
+      <div class="onboarding-actions">
+        <button class="btn btn-ghost" id="onboardSkipBtn">Skip</button>
+        <button class="btn btn-primary" id="onboardNextBtn">Continue</button>
+      </div>
+    </div>
+    <!-- Step 2 -->
+    <div class="onboarding-card" id="onboardStep2" style="display:none">
+      <div class="onboarding-step-indicator">
+        <span class="dot"></span>
+        <span class="dot active"></span>
+      </div>
+      <h2 class="onboarding-title">What are you working on?</h2>
+      <p class="onboarding-subtitle">Add a project or goal (optional)</p>
+      <input type="text" class="onboarding-input" id="onboardProjectInput" placeholder="e.g. Website Redesign" autocomplete="off">
+      <div class="onboarding-actions">
+        <button class="btn btn-ghost" id="onboardSkip2Btn">Skip</button>
+        <button class="btn btn-primary" id="onboardDoneBtn">Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ APP SHELL ============ -->
+  <div class="app-shell" id="appShell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">Kairo</div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-view="home" id="navHome">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </div>
+        <div class="nav-item" data-view="projects" id="navProjects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Projects
+        </div>
+        <div class="sidebar-section-label">Sharing</div>
+        <div class="nav-item" data-view="client" id="navClient">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Client View
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-avatar" id="sidebarAvatar">K</div>
+        <span class="sidebar-user-name" id="sidebarUserName">User</span>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+      <!-- HOME VIEW -->
+      <section class="view active" id="viewHome">
+        <h1 class="home-greeting" id="homeGreeting">Good evening</h1>
+        <p class="home-date" id="homeDate"></p>
+
+        <!-- Focus Top 3 -->
+        <div class="focus-section">
+          <div class="section-label">Top Priority</div>
+          <div class="focus-cards" id="focusCards"></div>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list-section">
+          <div class="section-label">All Tasks</div>
+          <div id="taskList"></div>
+          <div class="quick-add" id="quickAdd">
+            <span class="plus-icon">+</span>
+            <input type="text" id="quickAddInput" placeholder="Add a task…" autocomplete="off">
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS VIEW -->
+      <section class="view" id="viewProjects">
+        <div class="projects-header">
+          <h1>Projects</h1>
+          <button class="btn btn-primary" id="newProjectBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Project
+          </button>
+        </div>
+        <div class="project-grid" id="projectGrid"></div>
+      </section>
+
+      <!-- PROJECT DASHBOARD VIEW -->
+      <section class="view" id="viewProjectDash">
+        <div class="project-dash-back" id="projectDashBack">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to Projects
+        </div>
+        <div class="project-dash-header">
+          <div>
+            <h1 class="project-dash-title" id="projectDashTitle"></h1>
+          </div>
+          <div class="project-dash-members" id="projectDashMembers"></div>
+        </div>
+        <div class="project-progress-section">
+          <div class="project-progress-big-bar">
+            <div class="project-progress-big-fill" id="projectDashFill" style="width:0%"></div>
+          </div>
+          <div class="project-progress-stats">
+            <div class="project-progress-percent" id="projectDashPercent">0%</div>
+            <div class="project-progress-meta" id="projectDashMeta"></div>
+          </div>
+        </div>
+        <div id="projectDashGroups"></div>
+      </section>
+
+      <!-- CLIENT VIEW -->
+      <section class="view" id="viewClient">
+        <div class="client-view-container">
+          <div class="client-view-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Client View — Read Only
+          </div>
+          <div id="clientViewSelect">
+            <h2 class="client-view-title">Select a project</h2>
+            <div id="clientProjectList" class="project-grid"></div>
+          </div>
+          <div id="clientViewDetail" style="display:none">
+            <h1 class="client-view-title" id="clientProjectTitle"></h1>
+            <div class="client-progress-card">
+              <div class="project-progress-big-bar">
+                <div class="project-progress-big-fill" id="clientProgressFill" style="width:0%"></div>
+              </div>
+              <div class="project-progress-stats">
+                <div class="project-progress-percent" id="clientPercent">0%</div>
+                <div class="project-progress-meta" id="clientMeta"></div>
+              </div>
+            </div>
+            <div class="section-label" style="margin-top:2rem">Completed</div>
+            <div class="client-task-list" id="clientCompletedTasks"></div>
+            <div class="section-label" style="margin-top:1.5rem">Pending</div>
+            <div class="client-task-list" id="clientPendingTasks"></div>
+            <button class="btn btn-ghost" id="clientBackBtn" style="margin-top:2rem">← Back</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ MODALS ============ -->
+  <div class="modal-overlay" id="newProjectModal">
+    <div class="modal">
+      <div class="modal-title">New Project</div>
+      <div class="modal-field">
+        <label>Project Name</label>
+        <input type="text" id="modalProjectName" placeholder="e.g. Website Redesign" autocomplete="off">
+      </div>
+      <div class="modal-field">
+        <label>Description (optional)</label>
+        <input type="text" id="modalProjectDesc" placeholder="Brief description" autocomplete="off">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modalCancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="modalCreateBtn">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
