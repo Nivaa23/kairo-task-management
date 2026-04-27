@@ -8,13 +8,14 @@
     content="Kairo — A calm, focused productivity tool for daily task management and project tracking.">
   <title>Kairo — Your moment to act</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/additions.css">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱</text></svg>">
 </head>
 
 <body>
 
-  <!-- ============ SPLASH SCREEN ============ -->
+  <!-- SPLASH -->
   <div class="splash-screen" id="splashScreen">
     <div class="splash-logo">Kairo</div>
     <p class="splash-tagline">Your moment to act</p>
@@ -24,14 +25,10 @@
     <p class="splash-hint">Press <kbd>Enter</kbd> to begin</p>
   </div>
 
-  <!-- ============ ONBOARDING ============ -->
+  <!-- ONBOARDING -->
   <div class="onboarding-screen hidden" id="onboardingScreen">
-    <!-- Step 1 -->
     <div class="onboarding-card" id="onboardStep1">
-      <div class="onboarding-step-indicator">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-      </div>
+      <div class="onboarding-step-indicator"><span class="dot active"></span><span class="dot"></span></div>
       <h2 class="onboarding-title">Welcome to Kairo</h2>
       <p class="onboarding-subtitle">What should we call you?</p>
       <input type="text" class="onboarding-input" id="onboardNameInput" placeholder="Your name" autocomplete="off">
@@ -40,12 +37,8 @@
         <button class="btn btn-primary" id="onboardNextBtn">Continue</button>
       </div>
     </div>
-    <!-- Step 2 -->
     <div class="onboarding-card" id="onboardStep2" style="display:none">
-      <div class="onboarding-step-indicator">
-        <span class="dot"></span>
-        <span class="dot active"></span>
-      </div>
+      <div class="onboarding-step-indicator"><span class="dot"></span><span class="dot active"></span></div>
       <h2 class="onboarding-title">What are you working on?</h2>
       <p class="onboarding-subtitle">Add a project or goal (optional)</p>
       <input type="text" class="onboarding-input" id="onboardProjectInput" placeholder="e.g. Website Redesign"
@@ -57,9 +50,8 @@
     </div>
   </div>
 
-  <!-- ============ APP SHELL ============ -->
+  <!-- APP SHELL -->
   <div class="app-shell" id="appShell">
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">Kairo</div>
       <nav class="sidebar-nav">
@@ -96,32 +88,42 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content" id="mainContent">
-
-      <!-- HOME VIEW -->
+      <!-- HOME -->
       <section class="view active" id="viewHome">
         <h1 class="home-greeting" id="homeGreeting">Good evening</h1>
         <p class="home-date" id="homeDate"></p>
 
-        <!-- Focus Top 3 -->
+        <div class="summary-bar" id="summaryBar"></div>
+
+        <div class="active-section" id="activeSection"></div>
+
         <div class="focus-section">
-          <div class="section-label">Top Priority</div>
+          <div class="section-header">
+            <div class="section-label">Top Priority</div>
+          </div>
           <div class="focus-cards" id="focusCards"></div>
         </div>
 
-        <!-- Task List -->
         <div class="task-list-section">
-          <div class="section-label">All Tasks</div>
+          <div class="section-header">
+            <div class="section-label">Tasks</div>
+            <div class="filter-tabs" id="filterTabs">
+              <div class="filter-tab active" data-filter="all">All</div>
+              <div class="filter-tab" data-filter="my">My Tasks</div>
+              <div class="filter-tab" data-filter="active">Active</div>
+              <div class="filter-tab" data-filter="done">Done</div>
+            </div>
+          </div>
           <div id="taskList"></div>
-          <div class="quick-add" id="quickAdd">
+          <div class="quick-add-enhanced" id="quickAdd">
             <span class="plus-icon">+</span>
-            <input type="text" id="quickAddInput" placeholder="Add a task…" autocomplete="off">
+            <input type="text" id="quickAddInput" placeholder="Add a task… (press Enter)" autocomplete="off">
           </div>
         </div>
       </section>
 
-      <!-- PROJECTS VIEW -->
+      <!-- PROJECTS -->
       <section class="view" id="viewProjects">
         <div class="projects-header">
           <h1>Projects</h1>
@@ -137,7 +139,7 @@
         <div class="project-grid" id="projectGrid"></div>
       </section>
 
-      <!-- PROJECT DASHBOARD VIEW -->
+      <!-- PROJECT DASHBOARD -->
       <section class="view" id="viewProjectDash">
         <div class="project-dash-back" id="projectDashBack">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -189,36 +191,77 @@
                 <div class="project-progress-meta" id="clientMeta"></div>
               </div>
             </div>
-            <div class="section-label" style="margin-top:2rem">Completed</div>
-            <div class="client-task-list" id="clientCompletedTasks"></div>
-            <div class="section-label" style="margin-top:1.5rem">Pending</div>
-            <div class="client-task-list" id="clientPendingTasks"></div>
-            <button class="btn btn-ghost" id="clientBackBtn" style="margin-top:2rem">← Back</button>
+            <div class="client-stats-grid" id="clientStatsGrid"></div>
+            <div class="client-section-grid" id="clientSectionGrid"></div>
+            <button class="btn btn-ghost" id="clientBackBtn" style="margin-top:2rem">← Back to projects</button>
           </div>
         </div>
       </section>
-
     </main>
   </div>
 
-  <!-- ============ MODALS ============ -->
+  <!-- MODALS -->
   <div class="modal-overlay" id="newProjectModal">
     <div class="modal">
       <div class="modal-title">New Project</div>
-      <div class="modal-field">
-        <label>Project Name</label>
-        <input type="text" id="modalProjectName" placeholder="e.g. Website Redesign" autocomplete="off">
-      </div>
-      <div class="modal-field">
-        <label>Description (optional)</label>
-        <input type="text" id="modalProjectDesc" placeholder="Brief description" autocomplete="off">
-      </div>
+      <div class="modal-field"><label>Project Name</label><input type="text" id="modalProjectName"
+          placeholder="e.g. Website Redesign" autocomplete="off"></div>
+      <div class="modal-field"><label>Description (optional)</label><input type="text" id="modalProjectDesc"
+          placeholder="Brief description" autocomplete="off"></div>
       <div class="modal-actions">
         <button class="btn btn-ghost" id="modalCancelBtn">Cancel</button>
         <button class="btn btn-primary" id="modalCreateBtn">Create</button>
       </div>
     </div>
   </div>
+
+  <!-- SIDE PANEL (task edit) -->
+  <div class="side-panel-overlay" id="sidePanelOverlay"></div>
+  <div class="side-panel" id="sidePanel">
+    <div class="side-panel-header">
+      <div class="side-panel-title">Edit Task</div>
+      <div class="side-panel-close" id="sidePanelClose">✕</div>
+    </div>
+    <div class="panel-field"><label>Task Name</label><input type="text" id="panelTaskName" autocomplete="off"></div>
+    <div class="panel-field"><label>Status</label>
+      <select id="panelTaskStatus">
+        <option value="not-started">Not Started</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="blocked">Blocked</option>
+      </select>
+    </div>
+    <div class="panel-field"><label>Role</label>
+      <select id="panelTaskRole">
+        <option value="">Unassigned</option>
+        <option value="designer">Designer</option>
+        <option value="developer">Developer</option>
+        <option value="manager">Manager</option>
+        <option value="reviewer">Reviewer</option>
+      </select>
+    </div>
+    <div class="panel-field"><label>Category</label>
+      <select id="panelTaskCategory">
+        <option value="">None</option>
+        <option value="Design">Design</option>
+        <option value="Development">Development</option>
+        <option value="Review">Review</option>
+      </select>
+    </div>
+    <div class="panel-field"><label>Project</label>
+      <select id="panelTaskProject">
+        <option value="">No project</option>
+      </select>
+    </div>
+    <div class="panel-actions">
+      <div class="panel-delete-btn" id="panelDeleteBtn">Delete task</div>
+      <button class="btn btn-ghost" id="panelCancelBtn">Cancel</button>
+      <button class="btn btn-primary" id="panelSaveBtn">Save</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastText"></span></div>
 
   <script src="js/app.js"></script>
 </body>
